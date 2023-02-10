@@ -18,7 +18,7 @@ const validacionLogin= Joi.object({
 })
 
 router.post('/register', async(req, res) => {
-    const {error} = validacionRegistro.validate(req.body)
+    const { error } = validacionRegistro.validate(req.body)
 
     if (error) {
         return res.status(400).json({
@@ -60,14 +60,13 @@ router.post('/register', async(req, res) => {
         }
     } catch (error) {
         return res.json({
-        error
+            error
         })
     }
-
 })
 
 router.post('/login', async(req, res) => {
-    const {error} = validacionLogin.validate(req.body)
+    const { error } = validacionLogin.validate(req.body)
 
     if (error) {
         return res.status(400).json({
@@ -84,6 +83,7 @@ router.post('/login', async(req, res) => {
             error: "Correo no encontrado"
         })   
     }   
+
     const passwordCorrecto = await bcrypt.compare(req.body.password,existeCorreo.password)
 
     if(!passwordCorrecto) {
@@ -95,12 +95,12 @@ router.post('/login', async(req, res) => {
     const token = Jwt.sign({
         name: existeCorreo.name,
         id: existeCorreo._id
-    },process.env.TOKEN_SECRET)
+    }, process.env.TOKEN_SECRET)
 
-    res.header('auth-token',token).json({
+    res.header('auth-token', token).json({
         error: null,
-        data: {token}
+        data: { token }
     })
 })
 
-module.exports=router
+module.exports = router

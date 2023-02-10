@@ -3,7 +3,7 @@ const mongose = require('mongoose')
 const bodyParser = require('body-parser')
 require('dotenv').config()
 
-const app = express();
+const app = express()
 
 //Capturar el body
 app.use(bodyParser.urlencoded({
@@ -17,24 +17,24 @@ const url = `mongodb+srv://${process.env.USUARIO}:${process.env.PASSWORD}@cluste
 mongose.connect(url,{
     useNewUrlParser : true,
     useUnifiedTopology: true
-}).then(()=> console.log('conectado a BD'))
-.catch((error)=> console.log('Error' + error))
+}).then(() => console.log('conectado a BD'))
+.catch((error) => console.log('Error' + error))
 
 //Creacion e importacion de rutas 
 const authRoutes = require('./routes/auth')
 
-//Middleware
-app.use('/api/user',authRoutes)
+//Ruta del Middleware
+app.use('/api/user', authRoutes)
 
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
     res.json({
-        estado:true,
-        mensaje : 'Funciona bien'
+        estado: true,
+        mensaje : 'Funciona bien... creo'
     })
 })
 
 //iniciamos el servidor 
 const PORT = process.env.PORT || 10000
-app.listen(PORT,()=>{
-console.log(`Servidor en Puerto : ${PORT} `)
+app.listen(PORT, () => { 
+    console.log(`Servidor en Puerto : ${PORT} `)
 })
