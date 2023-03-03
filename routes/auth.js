@@ -12,16 +12,16 @@ const validacionRegistro = Joi.object({
     password: Joi.string().min(6).max(1024).required()
 })
 
+const validacionLogin= Joi.object({
+    email: Joi.string().max(255).required(),
+    password: Joi.string().min(6).max(1024).required()
+})
+
 const validacionUpdate = Joi.object({
     id: Joi.string().max(1024).required(),
     name: Joi.string().max(255).required(),
     apaterno: Joi.string().max(255).required(),
     amaterno: Joi.string().max(255).required(),
-    password: Joi.string().min(6).max(1024).required()
-})
-
-const validacionLogin= Joi.object({
-    email: Joi.string().max(255).required(),
     password: Joi.string().min(6).max(1024).required()
 })
 
@@ -92,7 +92,7 @@ router.post('/login', async(req, res) => {
         })   
     }   
 
-    const passwordCorrecto = await bcrypt.compare(req.body.password,existeCorreo.password)
+    const passwordCorrecto = await bcrypt.compare(req.body.password, existeCorreo.password)
 
     if(!passwordCorrecto) {
         return res.status(400).json({
@@ -111,7 +111,7 @@ router.post('/login', async(req, res) => {
     })
 })
 
-router.get('getallusers', async(req, res) => {
+router.get('/getallusers', async(req, res) => {
     const users = await User.find()
 
     if (users) {
@@ -126,7 +126,7 @@ router.get('getallusers', async(req, res) => {
     }
 })
 
-router.post('updateuser', async(req, res) => {
+router.post('/deleteuser', async(req, res) => {
     const id = req.body.id
     const userExist = await User.findById({_id: id})
     if (userExist) {
@@ -143,7 +143,7 @@ router.post('updateuser', async(req, res) => {
 })
 
 router.post('/updateuser', async(req, res) => {
-    const { error } = validacionRegistro.validate(req.body)
+    const { error } = validacionUpdate.validate(req.body)
 
     if (error) {
         return res.status(400).json({
@@ -152,10 +152,10 @@ router.post('/updateuser', async(req, res) => {
     }
 
     let existeId = await User.findOne({
-        _id: req.body.email
+        _id: req.body.id
     })
 
-    if (!existeId) {
+    if (!existeId ) {
         return res.status(400).json({
             error: "El usuario no existe"
         })   
@@ -170,12 +170,11 @@ router.post('/updateuser', async(req, res) => {
         amaterno: req.body.amaterno,
         password: contrasenaNueva
     }
-
     try{
         const guardado = await User.findByIdAndUpdate(
             { _id: existeId.id },
             existeId,
-            { new: true}
+            { new: true }
         )
         if(guardado) {
             return res.json({
@@ -184,7 +183,7 @@ router.post('/updateuser', async(req, res) => {
             })
         } else {
             return res.json({
-            error:"No se pudo guardar"
+            error:"No se pudo actualizar"
             })
         }
     } catch (error) {
